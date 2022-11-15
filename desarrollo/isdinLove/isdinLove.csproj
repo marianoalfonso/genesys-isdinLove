@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="clases\cConexion.cs" />
+    <Compile Include="clases\xlsConnector.cs" />
     <Compile Include="clases\xlsWatcher.cs" />
     <Compile Include="forms\Form1.cs">
       <SubType>Form</SubType>
@@ -63,6 +64,12 @@
     <Compile Include="forms\watcherLive.Designer.cs">
       <DependentUpon>watcherLive.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\xlsImport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\xlsImport.Designer.cs">
+      <DependentUpon>xlsImport.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="forms\Form1.resx">
@@ -70,6 +77,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="forms\watcherLive.resx">
       <DependentUpon>watcherLive.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\xlsImport.resx">
+      <DependentUpon>xlsImport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
