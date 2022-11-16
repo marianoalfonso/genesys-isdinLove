@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using isdinLove.clases;
 
 namespace isdinLove.forms
 {
@@ -43,13 +44,19 @@ namespace isdinLove.forms
 
         private void xlsImport_Load(object sender, EventArgs e)
         {
-            xlsConnector conexion = new xlsConnector();
-            conexion.conexionAbrir();
+            string xlsxPath = @"Data source=A:\genesys.proyectos\genesys-isdinLove\desarrollo\isdinLove\inbox\";
+            string xlsxFileName = "CON - Archivo ISDIN Love.xlsx";
+            string sqlConnectionString = "Data Source=riv-sql03;initial catalog=sandbox;User id=malfonso;Password=2022MiruLeta";
+
+            xlsConnector conexion = new xlsConnector(xlsxPath, xlsxFileName, sqlConnectionString);
+            conexion.xlsxFileName = "CON - Archivo ISDIN Love.xlsx";
             DataTable dt = new DataTable();
-            string sql = "select [Checkout order id],[Shipping type] from[valueSheet$]";
+            string sql = "select [Checkout order id],[Shipping type],[Creation date],[Product type],[Product name],[Product EAN]," +
+                            "[Email],[Status],[Pharmacy id sap],[Delivery nº],[Address],[City],[Region name],[Zip code],[Name],[Surname]," +
+                            "[Phone],[Id Resource],[Packaging] " +
+                         "from [valueSheet$]";
             dt = conexion.obtenerDatos(sql);
             dataGridView1.DataSource = dt;
-            conexion.conexionCerrar();
         }
 
     }
