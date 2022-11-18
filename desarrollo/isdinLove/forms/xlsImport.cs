@@ -19,44 +19,48 @@ namespace isdinLove.forms
             InitializeComponent();
         }
 
-        //private void xlsImport_Load(object sender, EventArgs e)
-        //{
-        //    try
-        //    {
-        //        OleDbConnection conn = new OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0.;" + 
-        //            @"Data source=A:\genesys.proyectos\genesys-isdinLove\desarrollo\isdinLove\inbox\CON - Archivo ISDIN Love.xlsx;Extended properties= 'Excel 8.0;HDR=False'");
-        //        conn.Open();
-        //        OleDbCommand cmd = new OleDbCommand("select [Checkout order id],[Shipping type] from[valueSheet$]", conn);    //valueSheet$ (nombre de la hoja en el xls)
-        //        OleDbDataAdapter da = new OleDbDataAdapter();
-        //        da.SelectCommand = cmd;
-        //        DataTable dt = new DataTable();
-        //        dt.Clear();
-        //        da.Fill(dt);
-        //        dataGridView1.DataSource = dt;
-        //        conn.Close();
-        //    }
-        //    catch (Exception er)
-        //    {
-        //        MessageBox.Show(er.Message);
-        //    }
-
-        //}
-
         private void xlsImport_Load(object sender, EventArgs e)
         {
             string xlsxPath = @"Data source=A:\genesys.proyectos\genesys-isdinLove\desarrollo\isdinLove\inbox\";
-            string xlsxFileName = "CON - Archivo ISDIN Love.xlsx";
+            //DETECTAR TIPO DE ARCHIVO
+            //string xlsxFileName = "CON - Archivo ISDIN Love.xlsx";
+            string xlsxFileName = "PIN CANJES LI PIN.xlsx";
             string sqlConnectionString = "Data Source=riv-sql03;initial catalog=sandbox;User id=malfonso;Password=2022MiruLeta";
+            string sql;
 
             xlsConnector conexion = new xlsConnector(xlsxPath, xlsxFileName, sqlConnectionString);
-            conexion.xlsxFileName = "CON - Archivo ISDIN Love.xlsx";
             DataTable dt = new DataTable();
-            string sql = "select [Checkout order id],[Shipping type],[Creation date],[Product type],[Product name],[Product EAN]," +
-                            "[Email],[Status],[Pharmacy id sap],[Delivery nº],[Address],[City],[Region name],[Zip code],[Name],[Surname]," +
-                            "[Phone],[Id Resource],[Packaging] " +
-                         "from [valueSheet$]";
-            dt = conexion.obtenerDatos(sql);
-            dataGridView1.DataSource = dt;
+            conexion.xlsxFileName = xlsxFileName;
+
+            string archivo = xlsxFileName.Substring(0,3);
+            if (archivo == "CON")
+            {
+                sql = "select [Checkout order id],[Shipping type],[Creation date],[Product type],[Product name],[Product EAN]," +
+                                "[Email],[Status],[Pharmacy id sap],[Delivery nº],[Address],[City],[Region name],[Zip code],[Name],[Surname]," +
+                                "[Phone],[Id Resource],[Packaging] " +
+                             "from [valueSheet$]";
+                dt = conexion.obtenerDatos(archivo, sql);
+                //MUESTRO TEMPORALMENTE EL DATAGRID, LUEGO NO ME SIRVE
+                dataGridView1.DataSource = dt;
+            }
+            else if (archivo == "PIN")
+            {
+                sql = "select [Date],[Order ID],[SKU],[Units],[Product],[F# name],[M# name],[L# name],[Street],[City],[Postcode]," +
+                        "[Region],[Phone],[Manager ID],[Record Count],[Packing] " +
+                       "from [Hoja1$]";
+                dt = conexion.obtenerDatos(archivo, sql);
+                //MUESTRO TEMPORALMENTE EL DATAGRID, LUEGO NO ME SIRVE
+                dataGridView1.DataSource = dt;
+            }
+            else
+            {
+                MessageBox.Show("tipo de archivo no reconocido");
+            }
+
+
+            //ACA DEBERIA IR EL CODIGO EN COMUN, NO ME RECONOCE LA VARIABLE SQL DEFINIDA A NIVEL DE FUNCION
+
+
         }
 
     }

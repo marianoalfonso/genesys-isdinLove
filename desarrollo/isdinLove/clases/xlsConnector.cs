@@ -35,7 +35,7 @@ namespace isdinLove.clases
 
 
         //obtener datos y devolver datatable
-        public DataTable obtenerDatos(string sql) 
+        public DataTable obtenerDatos(string archivo, string sql) 
         {
             string sqlInsercion;
             try
@@ -50,33 +50,64 @@ namespace isdinLove.clases
                 da.Fill(dt);
                 xlsxConn.Close();
 
-                sqlConn.Open();
-                foreach (DataRow row in dt.Rows)
+                if(archivo == "CON")
                 {
-                    sqlInsercion = "insert into mtb_CON values ('" + row["Checkout order id"];
-                    sqlInsercion = sqlInsercion + "', '" + row["Shipping type"];
-                    sqlInsercion = sqlInsercion + "', '" + row["Creation date"];
-                    sqlInsercion = sqlInsercion + "', '" + row["Product type"];
-                    sqlInsercion = sqlInsercion + "', '" + row["Product name"];
-                    sqlInsercion = sqlInsercion + "', '" + row["Product EAN"];
-                    sqlInsercion = sqlInsercion + "', '" + row["Email"];
-                    sqlInsercion = sqlInsercion + "', '" + row["Status"];
-                    sqlInsercion = sqlInsercion + "', '" + row["Pharmacy id sap"];
-                    sqlInsercion = sqlInsercion + "', '" + row["Delivery nº"];
-                    sqlInsercion = sqlInsercion + "', '" + row["Address"];
-                    sqlInsercion = sqlInsercion + "', '" + row["City"];
-                    sqlInsercion = sqlInsercion + "', '" + row["Region name"];
-                    sqlInsercion = sqlInsercion + "', '" + row["Zip code"];
-                    sqlInsercion = sqlInsercion + "', '" + row["Name"];
-                    sqlInsercion = sqlInsercion + "', '" + row["Surname"];
-                    sqlInsercion = sqlInsercion + "', '" + row["Phone"];
-                    sqlInsercion = sqlInsercion + "', '" + row["Id Resource"];
-                    sqlInsercion = sqlInsercion + "', '" + row["Packaging"];
-                    sqlInsercion = sqlInsercion + "')";
+                    sqlConn.Open();
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        sqlInsercion = "insert into mtb_CON values ('" + row["Checkout order id"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Shipping type"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Creation date"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Product type"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Product name"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Product EAN"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Email"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Status"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Pharmacy id sap"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Delivery nº"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Address"];
+                        sqlInsercion = sqlInsercion + "', '" + row["City"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Region name"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Zip code"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Name"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Surname"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Phone"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Id Resource"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Packaging"];
+                        sqlInsercion = sqlInsercion + "')";
 
-                    guardarDatos(sqlInsercion);
+                        guardarDatos(sqlInsercion);
+                    }
+                    sqlConn.Close();
                 }
-                sqlConn.Close();
+                
+                else if(archivo == "PIN")
+                {
+                    sqlConn.Open();
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        sqlInsercion = "insert into mtb_PIN values ('" + row["Date"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Order ID"];
+                        sqlInsercion = sqlInsercion + "', '" + row["SKU"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Units"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Product"];
+                        sqlInsercion = sqlInsercion + "', '" + row["F# name"];
+                        sqlInsercion = sqlInsercion + "', '" + row["M# name"];
+                        sqlInsercion = sqlInsercion + "', '" + row["L# name"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Street"];
+                        sqlInsercion = sqlInsercion + "', '" + row["City"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Postcode"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Region"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Phone"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Manager ID"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Record Count"];
+                        sqlInsercion = sqlInsercion + "', '" + row["Packing"];
+                        sqlInsercion = sqlInsercion + "')";
+
+                        guardarDatos(sqlInsercion);
+                    }
+                    sqlConn.Close();
+                }
 
                 return dt;
             }
