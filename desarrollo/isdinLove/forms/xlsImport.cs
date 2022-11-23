@@ -14,6 +14,11 @@ namespace isdinLove.forms
 {
     public partial class xlsImport : Form
     {
+
+        //instancio la clase con las variables globales
+        clsConstantes constantesGlobales = new clsConstantes();
+        
+
         public xlsImport()
         {
             InitializeComponent();
@@ -21,18 +26,39 @@ namespace isdinLove.forms
 
         private void xlsImport_Load(object sender, EventArgs e)
         {
-            string xlsxPath = @"Data source=A:\genesys.proyectos\genesys-isdinLove\desarrollo\isdinLove\inbox\";
+
+            //importarXlsx();
+            validarArchivo();
+
+        }
+
+
+
+
+
+
+
+
+
+        //validamos el archivo importado
+        //analizar para modularizar este proceso
+        public void importarXlsx()
+        {
+
             //DETECTAR TIPO DE ARCHIVO
-            //string xlsxFileName = "CON - Archivo ISDIN Love.xlsx";
-            string xlsxFileName = "PIN CANJES LI PIN.xlsx";
-            string sqlConnectionString = "Data Source=riv-sql03;initial catalog=sandbox;User id=malfonso;Password=2022MiruLeta";
+                //string xlsxFileName = "CON - Archivo ISDIN Love.xlsx";
+                string xlsxFileName = "PIN CANJES LI PIN.xlsx";
+
+
+            string xlsxPath = constantesGlobales.xlsxPath;
+            string sqlConnectionString = constantesGlobales.sqlConnectionString;
             string sql;
 
             xlsConnector conexion = new xlsConnector(xlsxPath, xlsxFileName, sqlConnectionString);
             DataTable dt = new DataTable();
             conexion.xlsxFileName = xlsxFileName;
 
-            string archivo = xlsxFileName.Substring(0,3);
+            string archivo = xlsxFileName.Substring(0, 3);
             if (archivo == "CON")
             {
                 sql = "select [Checkout order id],[Shipping type],[Creation date],[Product type],[Product name],[Product EAN]," +
@@ -56,12 +82,38 @@ namespace isdinLove.forms
             {
                 MessageBox.Show("tipo de archivo no reconocido");
             }
+        }
+
+        public void validarArchivo()
+        {
+            try
+            {
+                conValidator validar = new conValidator();
+                bool validacionPackaging = validar.validarPackaging("CON"); //validamos packaging
+                bool validacionRemito = validar.validarRemito("CON"); //validamos remito
+                bool validacionProducto = validar.validarProducto("CON"); //validamos integridad de productos
+                bool validacionEmail = validar.validarEmail("CON");
+
+                MessageBox.Show("packaging: " + validacionPackaging);
+                MessageBox.Show("remitos: " + validacionRemito);
+                MessageBox.Show("productos: " + validacionProducto);
+                MessageBox.Show("email: " + validacionEmail);
 
 
-            //ACA DEBERIA IR EL CODIGO EN COMUN, NO ME RECONOCE LA VARIABLE SQL DEFINIDA A NIVEL DE FUNCION
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("error validando el archivo: " + ex.Message);
+            }
+
+
+
+
+
 
 
         }
+
 
     }
 }

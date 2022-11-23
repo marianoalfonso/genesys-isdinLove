@@ -50,6 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="clases\cConexion.cs" />
+    <Compile Include="clases\clsConstantes.cs" />
+    <Compile Include="clases\conValidator.cs" />
     <Compile Include="clases\xlsConnector.cs" />
     <Compile Include="clases\xlsWatcher.cs" />
     <Compile Include="forms\Form1.cs">
