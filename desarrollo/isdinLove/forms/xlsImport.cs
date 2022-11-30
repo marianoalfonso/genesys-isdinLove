@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Data.OleDb;  //agregado
 using System.Drawing;
 using System.Linq;
@@ -29,6 +30,7 @@ namespace isdinLove.forms
 
             //importarXlsx();
             validarArchivo();
+            generarPedido();
 
         }
 
@@ -47,7 +49,7 @@ namespace isdinLove.forms
 
             //DETECTAR TIPO DE ARCHIVO
                 //string xlsxFileName = "CON - Archivo ISDIN Love.xlsx";
-                string xlsxFileName = "PIN CANJES LI PIN.xlsx";
+            string xlsxFileName = "CON20221128131800.xlsx";
 
 
             string xlsxPath = constantesGlobales.xlsxPath;
@@ -65,7 +67,10 @@ namespace isdinLove.forms
                                 "[Email],[Status],[Pharmacy id sap],[Delivery nº],[Address],[City],[Region name],[Zip code],[Name],[Surname]," +
                                 "[Phone],[Id Resource],[Packaging] " +
                              "from [valueSheet$]";
+
+                conexion.limpiarTabla(archivo);
                 dt = conexion.obtenerDatos(archivo, sql);
+
                 //MUESTRO TEMPORALMENTE EL DATAGRID, LUEGO NO ME SIRVE
                 dataGridView1.DataSource = dt;
             }
@@ -113,6 +118,30 @@ namespace isdinLove.forms
 
 
         }
+
+        //armo el array con los articulos y cantidades
+        public void generarPedido()
+        {
+            string sqlConnectionString = constantesGlobales.sqlConnectionString;
+            string sql = "select [Product EAN][producto],count(*)[cantidad] from mtb_con group by [Product EAN]";
+            SqlConnection sqlConn = new SqlConnection(sqlConnectionString);
+            SqlCommand cmd = new SqlCommand(sql, sqlConn);
+            SqlDataReader reader;
+
+            sqlConn.Open();
+            reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                MessageBox.Show(reader.GetValue(0) + " - " + reader.GetValue(1));
+            }
+
+
+
+
+            sqlConn.Close();
+
+        }
+
 
 
     }

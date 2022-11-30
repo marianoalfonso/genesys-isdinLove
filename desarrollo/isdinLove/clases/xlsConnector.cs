@@ -33,6 +33,23 @@ namespace isdinLove.clases
 
         }
 
+        //limpiamos la tabla destino
+        public void limpiarTabla(string prefijoArchivo)
+        {
+            string sql = "truncate table mtb_" + prefijoArchivo;
+            SqlCommand cmd = new SqlCommand(sql, sqlConn);
+            try
+            {
+                sqlConn.Open();
+                cmd.ExecuteNonQuery();
+                sqlConn.Close();
+            }
+            catch (Exception)
+            {
+               
+                throw;
+            }
+        }
 
         //obtener datos y devolver datatable
         public DataTable obtenerDatos(string archivo, string sql) 
@@ -43,8 +60,7 @@ namespace isdinLove.clases
                 
                 xlsxConn.Open();
                 OleDbCommand cmd = new OleDbCommand(sql, xlsxConn);    //valueSheet$ (nombre de la hoja en el xls)
-                OleDbDataAdapter da = new OleDbDataAdapter();
-                da.SelectCommand = cmd;
+                OleDbDataAdapter da = new OleDbDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 dt.Clear();
                 da.Fill(dt);
