@@ -52,7 +52,7 @@ namespace isdinLove.clases
         }
 
         //obtener datos y devolver datatable
-        public DataTable obtenerDatos(string archivo, string sql) 
+        public DataTable obtenerDatos(string archivo, string sql, int fileID) 
         {
             string sqlInsercion;
             try
@@ -71,7 +71,8 @@ namespace isdinLove.clases
                     sqlConn.Open();
                     foreach (DataRow row in dt.Rows)
                     {
-                        sqlInsercion = "insert into mtb_CON values ('" + row["Checkout order id"];
+                        sqlInsercion = "insert into mtb_CON values (" + fileID;
+                        sqlInsercion = sqlInsercion + ", '" + row["Checkout order id"];
                         sqlInsercion = sqlInsercion + "', '" + row["Shipping type"];
                         sqlInsercion = sqlInsercion + "', '" + row["Creation date"];
                         sqlInsercion = sqlInsercion + "', '" + row["Product type"];
@@ -102,7 +103,8 @@ namespace isdinLove.clases
                     sqlConn.Open();
                     foreach (DataRow row in dt.Rows)
                     {
-                        sqlInsercion = "insert into mtb_PIN values ('" + row["Date"];
+                        sqlInsercion = "insert into mtb_PIN values (" + fileID;
+                        sqlInsercion = sqlInsercion + ", '" + row["Date"];
                         sqlInsercion = sqlInsercion + "', '" + row["Order ID"];
                         sqlInsercion = sqlInsercion + "', '" + row["SKU"];
                         sqlInsercion = sqlInsercion + "', '" + row["Units"];

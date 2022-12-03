@@ -11,13 +11,12 @@ namespace isdinLove.clases
     class conValidator
     {
         public string sqlConnectionString { get; set; }
-        clsConstantes constantesGlobales = new clsConstantes(); //instanciamos la clase constantesGlobales
         private SqlConnection sqlConn = new SqlConnection();
 
         //constructor
         public conValidator()
         {
-            this.sqlConnectionString = constantesGlobales.sqlConnectionString; //tomamos el sqlConnectionString de la clase de variables globales
+            this.sqlConnectionString = clsConstantes.sqlConnectionString; //tomamos el sqlConnectionString de la clase de variables globales
         }
 
 

@@ -8,12 +8,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using isdinLove.clases;
 
 namespace isdinLove.forms
 {
     public partial class watcherLive : Form
     {
-        string path = @"A:\genesys.proyectos\genesys-isdinLove\desarrollo\isdinLove\inbox";
 
         public watcherLive()
         {
@@ -22,13 +22,14 @@ namespace isdinLove.forms
 
         private void watcherLive_Load(object sender, EventArgs e)
         {
-            fileSystemWatcher1.Path = path; //agrego el path
+            fileSystemWatcher1.Path = clsConstantes.xlsxInboxPath;  //referencio la variable estatica
+            fileSystemWatcher1.EnableRaisingEvents = true;
             getFiles(); //se ejecuta al iniciar
         }
 
         private void getFiles()
         {
-            string[] lst = Directory.GetFiles(path); //getfiles es un metodo estatico, asique no es necesario invocar al objeto
+            string[] lst = Directory.GetFiles(clsConstantes.xlsxInboxPath); //getfiles es un metodo estatico, asique no es necesario invocar al objeto
             textBox1.Text = "";
             foreach (var sFile in lst)
             {
@@ -44,8 +45,10 @@ namespace isdinLove.forms
         private void fileSystemWatcher1_Created(object sender, FileSystemEventArgs e)
         {
             getFiles();
+            clsConstantes.fileName = e.Name;
+            xlsImport xlsImport = new xlsImport();
+            xlsImport.Show();
         }
-
         private void fileSystemWatcher1_Deleted(object sender, FileSystemEventArgs e)
         {
             getFiles();
