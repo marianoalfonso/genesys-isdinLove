@@ -48,43 +48,44 @@ namespace isdinLove.forms
             //DETECTAR TIPO DE ARCHIVO
                 //string xlsxFileName = "CON - Archivo ISDIN Love.xlsx";
             string xlsxFileName = clsConstantes.fileName;
+            clsConstantes.prefijo = xlsxFileName.Substring(0, 3);
 
-            bool validarArchivo = validarArchivo(clsConstantes.fileName);
+            //bool validarArchivo = validarArchivo(clsConstantes.fileName);
 
 
 
-            string xlsxPath = clsConstantes.xlsxPath;
-            string sqlConnectionString = clsConstantes.sqlConnectionString;
+            //string xlsxPath = clsConstantes.xlsxPath;
+            //string sqlConnectionString = clsConstantes.sqlConnectionString;
             string sql;
 
-            xlsConnector conexion = new xlsConnector(xlsxPath, xlsxFileName, sqlConnectionString);
+            xlsConnector conexion = new xlsConnector(clsConstantes.xlsxPath, xlsxFileName, clsConstantes.sqlConnectionString);
             DataTable dt = new DataTable();
             conexion.xlsxFileName = xlsxFileName;
 
-            string prefijoArchivo = xlsxFileName.Substring(0, 3);
+            //string prefijoArchivo = xlsxFileName.Substring(0, 3);
 
-            int fileID = obtenerID(prefijoArchivo);
+            int fileID = obtenerID(clsConstantes.prefijo);
 
 
-            if (prefijoArchivo == "CON")
+            if (clsConstantes.prefijo == "CON")
             {
                 sql = "select [Checkout order id],[Shipping type],[Creation date],[Product type],[Product name],[Product EAN]," +
                                 "[Email],[Status],[Pharmacy id sap],[Delivery nº],[Address],[City],[Region name],[Zip code],[Name],[Surname]," +
                                 "[Phone],[Id Resource],[Packaging] " +
                              "from [valueSheet$]";
 
-                conexion.limpiarTabla(prefijoArchivo);
-                dt = conexion.obtenerDatos(prefijoArchivo, sql, fileID);
+                conexion.limpiarTabla(clsConstantes.prefijo);
+                dt = conexion.obtenerDatos(clsConstantes.prefijo, sql, fileID);
 
                 //MUESTRO TEMPORALMENTE EL DATAGRID, LUEGO NO ME SIRVE
                 dataGridView1.DataSource = dt;
             }
-            else if (prefijoArchivo == "PIN")
+            else if (clsConstantes.prefijo == "PIN")
             {
                 sql = "select [Date],[Order ID],[SKU],[Units],[Product],[F# name],[M# name],[L# name],[Street],[City],[Postcode]," +
                         "[Region],[Phone],[Manager ID],[Record Count],[Packing] " +
                        "from [Hoja1$]";
-                dt = conexion.obtenerDatos(prefijoArchivo, sql, fileID);
+                dt = conexion.obtenerDatos(clsConstantes.prefijo, sql, fileID);
                 //MUESTRO TEMPORALMENTE EL DATAGRID, LUEGO NO ME SIRVE
                 dataGridView1.DataSource = dt;
             }
@@ -96,18 +97,18 @@ namespace isdinLove.forms
 
 
         //valido el archivo a procesar (ItemBoundsPortion nombre)
-        public bool validarArchivo(fileName)
-        {
-            try
-            {
+        //public bool validarArchivo(fileName)
+        //{
+        //    try
+        //    {
 
-            }
-            catch (Exception)
-            {
+        //    }
+        //    catch (Exception)
+        //    {
 
-                throw;
-            }
-        }
+        //        throw;
+        //    }
+        //}
 
 
         public int obtenerID(string prefijoArchivo)
@@ -118,11 +119,11 @@ namespace isdinLove.forms
                 string sql = "";
                 if (prefijoArchivo == "CON")
                 {
-                    sql = "select max(fileID)[fileID] from mtb_CON_STORE";
+                    sql = "select max(fileID) + 1 [fileID] from mtb_CON_STORE";
                 }
                 else if (prefijoArchivo == "PIN")
                 {
-                    sql = "select max(fileID)[fileID] from mtb_PIN_STORE";
+                    sql = "select max(fileID) + 1 as [fileID] from mtb_PIN_STORE";
                 }
 
                 SqlCommand cmd = new SqlCommand(sql, sqlConn);
@@ -136,7 +137,6 @@ namespace isdinLove.forms
             catch (Exception ex)
             {
                 return 1;
-                throw;
             }
 
 
@@ -151,10 +151,10 @@ namespace isdinLove.forms
             try
             {
                 conValidator validar = new conValidator();
-                bool validacionPackaging = validar.validarPackaging("CON"); //validamos packaging
-                bool validacionRemito = validar.validarRemito("CON"); //validamos remito
-                bool validacionProducto = validar.validarProducto("CON"); //validamos integridad de productos
-                bool validacionEmail = validar.validarEmail("CON");
+                bool validacionPackaging = validar.validarPackaging(clsConstantes.prefijo); //validamos packaging
+                bool validacionRemito = validar.validarRemito(clsConstantes.prefijo); //validamos remito
+                bool validacionProducto = validar.validarProducto(clsConstantes.prefijo); //validamos integridad de productos
+                bool validacionEmail = validar.validarEmail(clsConstantes.prefijo);
 
                 //muestro los controles check
                 //packaging
@@ -228,8 +228,16 @@ namespace isdinLove.forms
         {
             try
             {
+                string sql = "";
                 string sqlConnectionString = clsConstantes.sqlConnectionString;
-                string sql = "insert into mtb_CON_STORE select * from mtb_CON";
+                if (clsConstantes.prefijo == "CON")
+                {
+                    sql = "insert into mtb_CON_STORE select * from mtb_CON";
+                }
+                else if (clsConstantes.prefijo == "PIN")
+                {
+                    sql = "insert into mtb_PIN_STORE select * from mtb_PIN";
+                }
                 SqlConnection sqlConn = new SqlConnection(sqlConnectionString);
                 SqlCommand cmd = new SqlCommand(sql, sqlConn);
                 sqlConn.Open();

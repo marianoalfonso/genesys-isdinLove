@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace isdinLove.clases
+namespace isdinLoveCliente.clases
 {
     public static class clsConstantes
     {
