@@ -29,10 +29,13 @@ namespace isdinLove.forms
             importarXlsx();
             if (validarArchivo())
             {
-                if (transferirArchivo())
+                if (transferirArchivo("validado"))
                 {
                     generarPedido();
                 }
+            } else
+            {
+                transferirArchivo("no validado");
             }
         }
 
@@ -227,7 +230,7 @@ namespace isdinLove.forms
 
 
         //transfiero el archivo a las tablas de almacenamiento
-        public bool transferirArchivo()
+        public bool transferirArchivo(string estado)
         {
             try
             {
@@ -235,11 +238,25 @@ namespace isdinLove.forms
                 string sqlConnectionString = clsConstantes.sqlConnectionString;
                 if (clsConstantes.prefijo == "CON")
                 {
-                    sql = "insert into mtb_CON_STORE select * from mtb_CON";
+                    if (estado == "validado")
+                    {
+                        sql = "insert into mtb_CON_STORE select *,2[estado] from mtb_CON";
+                    } else
+                    {
+                        sql = "insert into mtb_CON_STORE select *,1[estado] from mtb_CON";
+                    }
+                    
                 }
                 else if (clsConstantes.prefijo == "PIN")
                 {
-                    sql = "insert into mtb_PIN_STORE select * from mtb_PIN";
+                    if (estado == "validado")
+                    {
+                        sql = "insert into mtb_PIN_STORE select *,2[estado] from mtb_PIN";
+                    } else
+                    {
+                        sql = "insert into mtb_PIN_STORE select *,1[estado] from mtb_PIN";
+                    }
+                        
                 }
                 SqlConnection sqlConn = new SqlConnection(sqlConnectionString);
                 SqlCommand cmd = new SqlCommand(sql, sqlConn);
