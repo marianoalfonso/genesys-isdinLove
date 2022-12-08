@@ -278,51 +278,88 @@ namespace isdinLove.forms
         public void generarPedido()
         {
             string sqlConnectionString = clsConstantes.sqlConnectionString;
-            string sql = "select [Product EAN][producto],count(*)[cantidad] from mtb_con group by [Product EAN]";
-            SqlConnection sqlConn = new SqlConnection(sqlConnectionString);
-            SqlCommand cmd = new SqlCommand(sql, sqlConn);
-            SqlDataReader reader;
-            string productoObtenido;
-            int cantidadObtenida;
+            string sql = "";
+            string prefijoArchivo = "CON";
+            string msj = "";
 
-            //creo el datatable
-            DataTable productos = new DataTable("productos");
-            DataColumn producto = new DataColumn("producto");
-            DataColumn cantidad = new DataColumn("cantidad");
-            productos.Columns.Add(producto);
-            productos.Columns.Add(cantidad);
-
-            sqlConn.Open();
-            reader = cmd.ExecuteReader();
-            while (reader.Read())
+            try
             {
-                productoObtenido = reader[0].ToString();
-                cantidadObtenida = int.Parse(reader[1].ToString());
-                DataRow fila = productos.NewRow();
-                fila["producto"] = productoObtenido;
-                fila["cantidad"] = cantidadObtenida;
-                productos.Rows.Add(fila);
+                sql = "select [Product EAN][producto],count(*)[cantidad] from mtb_con group by [Product EAN]";
+                SqlConnection sqlConn = new SqlConnection(sqlConnectionString);
+                SqlCommand cmd = new SqlCommand(sql, sqlConn);
+                SqlDataReader reader;
+                string productoObtenido;
+                int cantidadObtenida;
+
+                //creo el datatable
+                DataTable productos = new DataTable("productos");
+                DataColumn producto = new DataColumn("producto");
+                DataColumn cantidad = new DataColumn("cantidad");
+                DataColumn prefijo = new DataColumn("prefijo");
+                DataColumn mensaje = new DataColumn("mensaje");
+                productos.Columns.Add(producto);
+                productos.Columns.Add(cantidad);
+                productos.Columns.Add(prefijo);
+                productos.Columns.Add(mensaje);
+
+                sqlConn.Open();
+                reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    productoObtenido = reader[0].ToString();
+                    cantidadObtenida = int.Parse(reader[1].ToString());
+                    DataRow fila = productos.NewRow();
+                    fila["producto"] = productoObtenido;
+                    fila["cantidad"] = cantidadObtenida;
+                    fila["prefijo"] = "CON";
+                    fila["mensaje"] = msj;
+
+                    productos.Rows.Add(fila);
+                }
+                reader.Close();
+
+                //obtengo la cantiad de packaging (chkPackaging = 'ISDIN')
+                sql = "select count(*)[cantidad] from mtb_con where packaging = 'ISDIN'";
+                cmd.Connection = sqlConn;
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = sql;
+                int cantidadPackaging = Convert.ToInt32(cmd.ExecuteScalar());
+                //agrego el valor al datatable
+                DataRow filaPackaging = productos.NewRow();
+                filaPackaging["producto"] = "packaging";
+                filaPackaging["cantidad"] = cantidadPackaging;
+                filaPackaging["prefijo"] = prefijoArchivo;
+                filaPackaging["mensaje"] = msj;
+                productos.Rows.Add(filaPackaging);
+
+                //asigno temporalmente lo obtenido al grid
+                dgvProductos.DataSource = productos;
+                sqlConn.Close();
+
+
+                SqlBulkCopy objBulk = new SqlBulkCopy(sqlConn);
+                objBulk.DestinationTableName = "tmpProcesoIsdin";
+                //debo mapear cada campo del datatable
+                objBulk.ColumnMappings.Add("producto", "cod_articulo");
+                objBulk.ColumnMappings.Add("cantidad", "cantidad");
+                objBulk.ColumnMappings.Add("prefijo", "proceso");
+                objBulk.ColumnMappings.Add("mensaje", "mensaje");
+                sqlConn.Open();
+                objBulk.WriteToServer(productos);
+                sqlConn.Close();
+
+
+
+
+
+
             }
-            reader.Close();
-
-            //obtengo la cantiad de packaging (chkPackaging = 'ISDIN')
-            sql = "select count(*)[cantidad] from mtb_con where packaging = 'ISDIN'";
-            cmd.Connection = sqlConn;
-            cmd.CommandType = CommandType.Text;
-            cmd.CommandText = sql;
-            int cantidadPackaging = Convert.ToInt32(cmd.ExecuteScalar());
-            //agrego el valor al datatable
-            DataRow filaPackaging = productos.NewRow();
-            filaPackaging["producto"] = "packaging";
-            filaPackaging["cantidad"] = cantidadPackaging;
-            productos.Rows.Add(filaPackaging);
+            catch (Exception ex)
+            {
 
 
-            //asigno temporalmente lo obtenido al grid
-            dgvProductos.DataSource = productos;
-
-
-            sqlConn.Close();
+                throw;
+            }
 
         }
 
