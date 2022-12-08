@@ -129,7 +129,7 @@ namespace isdinLove.clases
 
                 return dt;
             }
-            catch (Exception err)
+            catch (Exception ex)
             {
                 return null;
             }

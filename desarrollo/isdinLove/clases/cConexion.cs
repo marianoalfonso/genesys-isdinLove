@@ -11,27 +11,24 @@ namespace isdinLove.clases
     class cConexion
     {
         SqlConnection conn = new SqlConnection();
-        static string host = "riv-sql03";
-        static string db = "sandbox";
-        static string usr = "malfonso";
-        static string pwd = "2022MiruLeta";
-        static string port = "1433";
 
-        public string connectionString = "Data Source = " + host + "," + port + "; user id = " + usr + "; password = " + pwd + "; Initial Catalog = " + db + "; Persist Security Info = true";
-
-        public SqlConnection setConnection()
+        //conecta con la DB con los parametros seteados}
+        //y devuelve true o false 
+        public bool setConnection()
         {
             try
             {
-                conn.ConnectionString = connectionString;
+                conn.ConnectionString = clsConstantes.sqlConnectionString;
                 conn.Open();
-                MessageBox.Show("conexion correcta");
+                conn.Close();
+                return true;
             }
             catch (SqlException e)
             {
-                MessageBox.Show("no se logro conectar a la DB: (" + e.ToString() + ")");
+                //guardar el error en el log de errores
+                //MessageBox.Show("no se logro conectar a la DB: (" + e.ToString() + ")");
+                return false;
             }
-            return conn;
         }
     }
 }

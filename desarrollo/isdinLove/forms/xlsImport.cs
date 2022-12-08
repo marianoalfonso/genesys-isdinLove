@@ -23,6 +23,9 @@ namespace isdinLove.forms
 
         private void xlsImport_Load(object sender, EventArgs e)
         {
+            //averiguar si es posible controlar el nombre del archivo
+            //para evitar ser procesado nuevamente
+
             importarXlsx();
             if (validarArchivo())
             {
