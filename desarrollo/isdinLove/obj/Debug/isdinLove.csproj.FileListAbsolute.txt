@@ -7,3 +7,6 @@ A:\genesys.proyectos\genesys-isdinLove\desarrollo\isdinLove\obj\Debug\isdinLove.
 A:\genesys.proyectos\genesys-isdinLove\desarrollo\isdinLove\obj\Debug\isdinLove.csproj.GenerateResource.Cache
 A:\genesys.proyectos\genesys-isdinLove\desarrollo\isdinLove\obj\Debug\isdinLove.exe
 A:\genesys.proyectos\genesys-isdinLove\desarrollo\isdinLove\obj\Debug\isdinLove.pdb
+C:\projects\genesys\suadeo\ISDIN\genesys-isdinLove\desarrollo\isdinLove\bin\Debug\isdinLove.exe.config
+C:\projects\genesys\suadeo\ISDIN\genesys-isdinLove\desarrollo\isdinLove\obj\Debug\isdinLove.exe
+C:\projects\genesys\suadeo\ISDIN\genesys-isdinLove\desarrollo\isdinLove\obj\Debug\isdinLove.pdb
