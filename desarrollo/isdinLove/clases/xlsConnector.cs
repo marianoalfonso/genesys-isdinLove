@@ -29,8 +29,6 @@ namespace isdinLove.clases
             string cadenaConexion = "Provider=Microsoft.ACE.OLEDB.12.0.;" + xlsxPath + xlsxFileName + ";Extended properties= 'Excel 8.0;HDR=False'";
             xlsxConn.ConnectionString = cadenaConexion;         //xlsx
             sqlConn.ConnectionString = sqlConnectionString;     //sql
-            
-
         }
 
         //limpiamos la tabla destino
@@ -68,6 +66,15 @@ namespace isdinLove.clases
 
                 if(archivo == "CON")
                 {
+                    SqlBulkCopy objBulk = new SqlBulkCopy(sqlConn);
+                    objBulk.DestinationTableName = "mtb_CON";
+                    objBulk.ColumnMappings("Checkout order id", "");
+
+
+
+
+
+
                     sqlConn.Open();
                     foreach (DataRow row in dt.Rows)
                     {
