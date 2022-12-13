@@ -45,10 +45,19 @@ namespace isdinLove.forms
         private void fileSystemWatcher1_Created(object sender, FileSystemEventArgs e)
         {
             getFiles();
-            clsConstantes.fileName = e.Name;
-            xlsImport xlsImport = new xlsImport();
-            xlsImport.Show();
+            string fileName = e.Name;
+            if(fileName.Substring(0, 3) == "CON" || fileName.Substring(0, 3) == "PIN")
+            {
+                clsConstantes.fileName = fileName;
+                xlsImport xlsImport = new xlsImport();
+                xlsImport.Show();
+            }
+            else
+            {
+                MessageBox.Show("no se reconoce el nombre del archivo");
+            }
         }
+
         private void fileSystemWatcher1_Deleted(object sender, FileSystemEventArgs e)
         {
             getFiles();

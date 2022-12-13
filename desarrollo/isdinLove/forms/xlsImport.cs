@@ -81,7 +81,9 @@ namespace isdinLove.forms
                              "from [valueSheet$]";
 
                 conexion.limpiarTabla(clsConstantes.prefijo);
-                dt = conexion.obtenerDatos(clsConstantes.prefijo, sql, fileID);
+
+                dt = conexion.obtenerDatosBulk(clsConstantes.prefijo, sql, fileID);
+                //dt = conexion.obtenerDatos(clsConstantes.prefijo, sql, fileID);
 
                 //MUESTRO TEMPORALMENTE EL DATAGRID, LUEGO NO ME SIRVE
                 dataGridView1.DataSource = dt;
@@ -91,7 +93,10 @@ namespace isdinLove.forms
                 sql = "select [Date],[Order ID],[SKU],[Units],[Product],[F# name],[M# name],[L# name],[Street],[City],[Postcode]," +
                         "[Region],[Phone],[Manager ID],[Record Count],[Packing] " +
                        "from [Hoja1$]";
-                dt = conexion.obtenerDatos(clsConstantes.prefijo, sql, fileID);
+
+                dt = conexion.obtenerDatosBulk(clsConstantes.prefijo, sql, fileID);
+                //dt = conexion.obtenerDatos(clsConstantes.prefijo, sql, fileID);
+
                 //MUESTRO TEMPORALMENTE EL DATAGRID, LUEGO NO ME SIRVE
                 dataGridView1.DataSource = dt;
             }
@@ -219,13 +224,6 @@ namespace isdinLove.forms
                 MessageBox.Show("error validando el archivo: " + ex.Message);
                 return validado;
             }
-
-
-
-
-
-
-
         }
 
 
@@ -304,6 +302,8 @@ namespace isdinLove.forms
 
                 sqlConn.Open();
                 reader = cmd.ExecuteReader();
+
+                //cargo los datos en el datatable
                 while (reader.Read())
                 {
                     productoObtenido = reader[0].ToString();
@@ -313,7 +313,6 @@ namespace isdinLove.forms
                     fila["cantidad"] = cantidadObtenida;
                     fila["prefijo"] = "CON";
                     fila["mensaje"] = msj;
-
                     productos.Rows.Add(fila);
                 }
                 reader.Close();
@@ -339,7 +338,7 @@ namespace isdinLove.forms
 
                 SqlBulkCopy objBulk = new SqlBulkCopy(sqlConn);
                 objBulk.DestinationTableName = "tmpProcesoIsdin";
-                //debo mapear cada campo del datatable
+                //mapeo cada campo del datatable (campo datatable --> campo tabla sql)
                 objBulk.ColumnMappings.Add("producto", "cod_articulo");
                 objBulk.ColumnMappings.Add("cantidad", "cantidad");
                 objBulk.ColumnMappings.Add("prefijo", "proceso");
