@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -40,99 +41,39 @@ namespace isdinLove.forms
         }
 
 
-
-
-
-
-
-
         //validamos el archivo importado
         //analizar para modularizar este proceso
         public void importarXlsx()
         {
-
             //DETECTAR TIPO DE ARCHIVO
-                //string xlsxFileName = "CON - Archivo ISDIN Love.xlsx";
             string xlsxFileName = clsConstantes.fileName;
             clsConstantes.prefijo = xlsxFileName.Substring(0, 3);
-
-            //bool validarArchivo = validarArchivo(clsConstantes.fileName);
-
-
-
-            //string xlsxPath = clsConstantes.xlsxPath;
-            //string sqlConnectionString = clsConstantes.sqlConnectionString;
-            string sql;
 
             xlsConnector conexion = new xlsConnector(clsConstantes.xlsxPath, xlsxFileName, clsConstantes.sqlConnectionString);
             DataTable dt = new DataTable();
             conexion.xlsxFileName = xlsxFileName;
 
-            //string prefijoArchivo = xlsxFileName.Substring(0, 3);
+            int fileID = obtenerID();
+            conexion.limpiarTabla();
+            dt = conexion.obtenerDatosBulk(fileID);
+            dataGridView1.DataSource = dt;
 
-            int fileID = obtenerID(clsConstantes.prefijo);
-
-
-            if (clsConstantes.prefijo == "CON")
-            {
-                sql = "select [Checkout order id],[Shipping type],[Creation date],[Product type],[Product name],[Product EAN]," +
-                                "[Email],[Status],[Pharmacy id sap],[Delivery nº],[Address],[City],[Region name],[Zip code],[Name],[Surname]," +
-                                "[Phone],[Id Resource],[Packaging] " +
-                             "from [valueSheet$]";
-
-                conexion.limpiarTabla(clsConstantes.prefijo);
-
-                dt = conexion.obtenerDatosBulk(clsConstantes.prefijo, sql, fileID);
-                //dt = conexion.obtenerDatos(clsConstantes.prefijo, sql, fileID);
-
-                //MUESTRO TEMPORALMENTE EL DATAGRID, LUEGO NO ME SIRVE
-                dataGridView1.DataSource = dt;
-            }
-            else if (clsConstantes.prefijo == "PIN")
-            {
-                sql = "select [Date],[Order ID],[SKU],[Units],[Product],[F# name],[M# name],[L# name],[Street],[City],[Postcode]," +
-                        "[Region],[Phone],[Manager ID],[Record Count],[Packing] " +
-                       "from [Hoja1$]";
-
-                dt = conexion.obtenerDatosBulk(clsConstantes.prefijo, sql, fileID);
-                //dt = conexion.obtenerDatos(clsConstantes.prefijo, sql, fileID);
-
-                //MUESTRO TEMPORALMENTE EL DATAGRID, LUEGO NO ME SIRVE
-                dataGridView1.DataSource = dt;
-            }
-            else
-            {
-                MessageBox.Show("tipo de archivo no reconocido");
-            }
+            moverArchivo(xlsxFileName);
         }
 
 
-        //valido el archivo a procesar (ItemBoundsPortion nombre)
-        //public bool validarArchivo(fileName)
-        //{
-        //    try
-        //    {
-
-        //    }
-        //    catch (Exception)
-        //    {
-
-        //        throw;
-        //    }
-        //}
-
-
-        public int obtenerID(string prefijoArchivo)
+        //obtengo el proximo ID del archivo
+        public int obtenerID()
         {
             try
             {
                 SqlConnection sqlConn = new SqlConnection(clsConstantes.sqlConnectionString);
                 string sql = "";
-                if (prefijoArchivo == "CON")
+                if (clsConstantes.prefijo == "CON")
                 {
                     sql = "select max(fileID) + 1 [fileID] from mtb_CON_STORE";
                 }
-                else if (prefijoArchivo == "PIN")
+                else if (clsConstantes.prefijo == "PIN")
                 {
                     sql = "select max(fileID) + 1 as [fileID] from mtb_PIN_STORE";
                 }
@@ -142,7 +83,6 @@ namespace isdinLove.forms
                 int fileID = (int)cmd.ExecuteScalar();
 
                 sqlConn.Close();
-                //return fileID;
                 return fileID;
             }
             catch (Exception ex)
@@ -271,6 +211,20 @@ namespace isdinLove.forms
             }
         }
 
+        //muevo el archivo de la carpeta INBOX a STORE
+        public void moverArchivo(string fileName)
+        {
+            try
+            {
+                string moverDesde = clsConstantes.xlsxInboxPath + fileName;
+                string moverHasta = clsConstantes.xlsxStore + fileName;
+                File.Move(moverDesde, moverHasta);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("no pudo moverse el archivo a la carpeta STORE: (" + ex.Message);
+            }
+        }
 
         //armo el array con los articulos y cantidades
         public void generarPedido()
@@ -348,10 +302,19 @@ namespace isdinLove.forms
                 sqlConn.Close();
 
 
-
-
-
-
+                //invoco al stored procedure y lo guardo en un datatable
+                //p_api_actualiza_stock  (se invoca por ODBC)
+                SqlConnection conn = new SqlConnection();
+                conn.ConnectionString = clsConstantes.sqlConnectionString;
+                conn.Open();
+                DataTable dt = new DataTable();
+                SqlDataAdapter da = new SqlDataAdapter("p_api_actualiza_stock", conn);
+                da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                da.SelectCommand.Parameters.AddWithValue("@p_proceso", SqlDbType.NVarChar).Value = "CON";
+                da.SelectCommand.Parameters.AddWithValue("@estado", SqlDbType.NVarChar).Value = "error";
+                da.Fill(dt);
+                dataGridView2.DataSource = dt;
+                conn.Close();
             }
             catch (Exception ex)
             {
@@ -362,7 +325,9 @@ namespace isdinLove.forms
 
         }
 
+        private void label2_Click(object sender, EventArgs e)
+        {
 
-
+        }
     }
 }

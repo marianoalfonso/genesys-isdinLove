@@ -34,8 +34,12 @@
             this.chkProducto = new System.Windows.Forms.CheckBox();
             this.chkEmail = new System.Windows.Forms.CheckBox();
             this.dgvProductos = new System.Windows.Forms.DataGridView();
+            this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProductos)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.SuspendLayout();
             // 
             // dataGridView1
@@ -89,16 +93,46 @@
             // dgvProductos
             // 
             this.dgvProductos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvProductos.Location = new System.Drawing.Point(904, 23);
+            this.dgvProductos.Location = new System.Drawing.Point(898, 71);
             this.dgvProductos.Name = "dgvProductos";
-            this.dgvProductos.Size = new System.Drawing.Size(193, 221);
+            this.dgvProductos.Size = new System.Drawing.Size(399, 181);
             this.dgvProductos.TabIndex = 5;
+            // 
+            // dataGridView2
+            // 
+            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView2.Location = new System.Drawing.Point(804, 293);
+            this.dataGridView2.Name = "dataGridView2";
+            this.dataGridView2.Size = new System.Drawing.Size(493, 303);
+            this.dataGridView2.TabIndex = 6;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(818, 274);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(195, 13);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "devolucion del STORED PROCEDURE";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(922, 55);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(133, 13);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "consolidacion del PEDIDO";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // xlsImport
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1260, 608);
+            this.ClientSize = new System.Drawing.Size(1309, 608);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.dataGridView2);
             this.Controls.Add(this.dgvProductos);
             this.Controls.Add(this.chkEmail);
             this.Controls.Add(this.chkProducto);
@@ -110,6 +144,7 @@
             this.Load += new System.EventHandler(this.xlsImport_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProductos)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -123,5 +158,8 @@
         private System.Windows.Forms.CheckBox chkProducto;
         private System.Windows.Forms.CheckBox chkEmail;
         private System.Windows.Forms.DataGridView dgvProductos;
+        private System.Windows.Forms.DataGridView dataGridView2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }

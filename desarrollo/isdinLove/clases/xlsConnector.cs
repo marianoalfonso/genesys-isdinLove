@@ -32,9 +32,9 @@ namespace isdinLove.clases
         }
 
         //limpiamos la tabla destino
-        public void limpiarTabla(string prefijoArchivo)
+        public void limpiarTabla()
         {
-            string sql = "truncate table mtb_" + prefijoArchivo;
+            string sql = "truncate table mtb_" + clsConstantes.prefijo;
             SqlCommand cmd = new SqlCommand(sql, sqlConn);
             try
             {
@@ -49,96 +49,28 @@ namespace isdinLove.clases
             }
         }
 
-        ////obtener datos y devolver datatable (SE REEMPLAZO POR EL METODO BULK INSERT PARA MAS VELOCIDAD)
-        //public DataTable obtenerDatos(string archivo, string sql, int fileID) 
-        //{
-        //    string sqlInsercion;
-        //    try
-        //    {
-                
-        //        xlsxConn.Open();
-        //        OleDbCommand cmd = new OleDbCommand(sql, xlsxConn);    //valueSheet$ (nombre de la hoja en el xls)
-        //        OleDbDataAdapter da = new OleDbDataAdapter(cmd);
-        //        DataTable dt = new DataTable();
-        //        dt.Clear();
-        //        da.Fill(dt);
-        //        xlsxConn.Close();
 
-        //        if(archivo == "CON")
-        //        {
-        //            sqlConn.Open();
-        //            foreach (DataRow row in dt.Rows)
-        //            {
-        //                sqlInsercion = "insert into mtb_CON values (" + fileID;
-        //                sqlInsercion = sqlInsercion + ", '" + row["Checkout order id"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Shipping type"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Creation date"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Product type"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Product name"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Product EAN"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Email"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Status"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Pharmacy id sap"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Delivery nº"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Address"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["City"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Region name"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Zip code"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Name"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Surname"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Phone"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Id Resource"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Packaging"];
-        //                sqlInsercion = sqlInsercion + "')";
-
-        //                guardarDatos(sqlInsercion);
-        //            }
-        //            sqlConn.Close();
-        //        }
-                
-        //        else if(archivo == "PIN")
-        //        {
-        //            sqlConn.Open();
-        //            foreach (DataRow row in dt.Rows)
-        //            {
-        //                sqlInsercion = "insert into mtb_PIN values (" + fileID;
-        //                sqlInsercion = sqlInsercion + ", '" + row["Date"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Order ID"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["SKU"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Units"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Product"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["F# name"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["M# name"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["L# name"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Street"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["City"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Postcode"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Region"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Phone"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Manager ID"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Record Count"];
-        //                sqlInsercion = sqlInsercion + "', '" + row["Packing"];
-        //                sqlInsercion = sqlInsercion + "')";
-
-        //                guardarDatos(sqlInsercion);
-        //            }
-        //            sqlConn.Close();
-        //        }
-
-        //        return dt;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return null;
-        //    }
-        //}
-
-
-
-        public DataTable obtenerDatosBulk(string archivo, string sql, int fileID)
+        //extraigo los datos del XLSX y los inserto en el SQL
+        public DataTable obtenerDatosBulk(int fileID)
+        //public DataTable obtenerDatosBulk(string archivo, string sql, int fileID)
         {
+            string sql = "";
             try
             {
+                if (clsConstantes.prefijo == "CON")
+                {
+                    sql = "select [Checkout order id],[Shipping type],[Creation date],[Product type],[Product name],[Product EAN]," +
+                            "[Email],[Status],[Pharmacy id sap],[Delivery nº],[Address],[City],[Region name],[Zip code],[Name],[Surname]," +
+                            "[Phone],[Id Resource],[Packaging] " +
+                            "from [valueSheet$]";
+                }
+                else if (clsConstantes.prefijo == "PIN")
+                {
+                    sql = "select [Date],[Order ID],[SKU],[Units],[Product],[F# name],[M# name],[L# name],[Street],[City],[Postcode]," +
+                            "[Region],[Phone],[Manager ID],[Record Count],[Packing] " +
+                            "from [Hoja1$]";
+                }
+
                 xlsxConn.Open();
                 OleDbCommand cmd = new OleDbCommand(sql, xlsxConn);    //valueSheet$ (nombre de la hoja en el xls)
                 OleDbDataAdapter da = new OleDbDataAdapter(cmd);
@@ -158,7 +90,7 @@ namespace isdinLove.clases
 
 
                 SqlBulkCopy objBulk = new SqlBulkCopy(sqlConn);
-                if (archivo == "CON")
+                if (clsConstantes.prefijo == "CON")
                 {
                     objBulk.DestinationTableName = "mtb_CON";
                     //mapeo cada campo del datatable (campo datatable --> campo tabla sql)
@@ -189,7 +121,7 @@ namespace isdinLove.clases
 
                     //return dt;
                 }
-                else if (archivo == "PIN")
+                else if (clsConstantes.prefijo == "PIN")
                 {
                     objBulk.DestinationTableName = "mtb_PIN";
                     //mapeo cada campo del datatable (campo datatable --> campo tabla sql)
@@ -214,8 +146,6 @@ namespace isdinLove.clases
                     sqlConn.Open();
                     objBulk.WriteToServer(dt);
                     sqlConn.Close();
-
-                    //return dt;
                 }
 
                 return dt;
@@ -228,22 +158,7 @@ namespace isdinLove.clases
             }
         }
 
-
-
-        ////obtener datos y devolver datatable  (SIN USO, ESTABA ASOCIADO A EL PROCEDIMIENTO obtenerDatos
-        //public void guardarDatos(string sqlLinea)
-        //{
-        //    try
-        //    {
-        //        SqlCommand sqlCmd = new SqlCommand(sqlLinea, sqlConn);
-        //        sqlCmd.ExecuteNonQuery();
-        //    }
-        //    catch (Exception err)
-        //    {
-        //        Console.Write(err.Message);
-        //    }
-        //}
-
+        //abro la conexion SQL
         public void conexionSqlAbrir()
         {
             try
@@ -258,6 +173,7 @@ namespace isdinLove.clases
             }
         }
 
+        //cierro la conexion SQL
         public void conexionSqlCerrar()
         {
             try
