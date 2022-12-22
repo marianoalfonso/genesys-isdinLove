@@ -2,7 +2,6 @@ A:\genesys.proyectos\genesys-isdinLove\desarrollo\isdinLove\bin\Debug\isdinLove.
 A:\genesys.proyectos\genesys-isdinLove\desarrollo\isdinLove\bin\Debug\isdinLove.exe
 A:\genesys.proyectos\genesys-isdinLove\desarrollo\isdinLove\bin\Debug\isdinLove.pdb
 A:\genesys.proyectos\genesys-isdinLove\desarrollo\isdinLove\obj\Debug\isdinLove.csprojResolveAssemblyReference.cache
-A:\genesys.proyectos\genesys-isdinLove\desarrollo\isdinLove\obj\Debug\isdinLove.Form1.resources
 A:\genesys.proyectos\genesys-isdinLove\desarrollo\isdinLove\obj\Debug\isdinLove.Properties.Resources.resources
 A:\genesys.proyectos\genesys-isdinLove\desarrollo\isdinLove\obj\Debug\isdinLove.csproj.GenerateResource.Cache
 A:\genesys.proyectos\genesys-isdinLove\desarrollo\isdinLove\obj\Debug\isdinLove.exe
@@ -20,3 +19,4 @@ C:\projects\genesys\suadeo\ISDIN\genesys-isdinLove\desarrollo\isdinLove\obj\Debu
 C:\projects\genesys\suadeo\ISDIN\genesys-isdinLove\desarrollo\isdinLove\obj\Debug\isdinLove.Properties.Resources.resources
 C:\projects\genesys\suadeo\ISDIN\genesys-isdinLove\desarrollo\isdinLove\obj\Debug\isdinLove.csproj.GenerateResource.Cache
 C:\projects\genesys\suadeo\ISDIN\genesys-isdinLove\desarrollo\isdinLove\obj\Debug\isdinLove.forms.diagnosis.resources
+A:\genesys.proyectos\genesys-isdinLove\desarrollo\isdinLove\obj\Debug\isdinLove.forms.diagnosis.resources

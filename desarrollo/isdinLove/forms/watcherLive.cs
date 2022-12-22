@@ -45,10 +45,26 @@ namespace isdinLove.forms
         private void fileSystemWatcher1_Created(object sender, FileSystemEventArgs e)
         {
             getFiles();
-            clsConstantes.fileName = e.Name;
-            xlsImport xlsImport = new xlsImport();
-            xlsImport.Show();
+            string fileName = e.Name;
+            if (validarPrefijo(fileName))
+            {
+                if (validarExistenciaArchivo(fileName))
+                {
+                    MessageBox.Show("el archivo ya existe");
+                }
+                else //no existe, se procesa
+                {
+                    clsConstantes.fileName = fileName;
+                    xlsImport xlsImport = new xlsImport();
+                    xlsImport.Show();
+                }
+            }
+            else //el archivo no es CON o PIN
+            {
+                MessageBox.Show("no se reconoce el nombre del archivo");
+            }
         }
+
         private void fileSystemWatcher1_Deleted(object sender, FileSystemEventArgs e)
         {
             getFiles();
@@ -58,5 +74,46 @@ namespace isdinLove.forms
         {
             getFiles();
         }
+
+        //verifico que el prefijo del archivo sea CON o PIN
+        private bool validarPrefijo(string fileName)
+        {
+            bool estado = false;
+
+            try
+            {
+                if (fileName.Substring(0, 3) == "CON" || fileName.Substring(0, 3) == "PIN")
+                {
+                    estado = true;
+                }
+                return estado;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        //verifico que el archivo no exista previamente en la carpeta STORE
+        private bool validarExistenciaArchivo(string fileName)
+        {
+            bool estado = false;
+            try
+            {
+                string path = clsConstantes.xlsxStore + fileName;
+                estado = File.Exists(path);
+                
+                if (estado) //si existe, borro el archivo en la carpeta INBOX
+                {
+                    File.Delete(clsConstantes.xlsxInboxPath + fileName);
+                }
+                return estado;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
     }
 }

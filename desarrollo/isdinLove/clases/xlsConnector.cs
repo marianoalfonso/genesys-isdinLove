@@ -32,9 +32,9 @@ namespace isdinLove.clases
         }
 
         //limpiamos la tabla destino
-        public void limpiarTabla(string prefijoArchivo)
+        public void limpiarTabla()
         {
-            string sql = "truncate table mtb_" + prefijoArchivo;
+            string sql = "truncate table mtb_" + clsConstantes.prefijo;
             SqlCommand cmd = new SqlCommand(sql, sqlConn);
             try
             {
@@ -49,13 +49,28 @@ namespace isdinLove.clases
             }
         }
 
-        //obtener datos y devolver datatable
-        public DataTable obtenerDatos(string archivo, string sql, int fileID) 
+
+        //extraigo los datos del XLSX y los inserto en el SQL
+        public DataTable obtenerDatosBulk(int fileID)
+        //public DataTable obtenerDatosBulk(string archivo, string sql, int fileID)
         {
-            string sqlInsercion;
+            string sql = "";
             try
             {
-                
+                if (clsConstantes.prefijo == "CON")
+                {
+                    sql = "select [Checkout order id],[Shipping type],[Creation date],[Product type],[Product name],[Product EAN]," +
+                            "[Email],[Status],[Pharmacy id sap],[Delivery nº],[Address],[City],[Region name],[Zip code],[Name],[Surname]," +
+                            "[Phone],[Id Resource],[Packaging] " +
+                            "from [valueSheet$]";
+                }
+                else if (clsConstantes.prefijo == "PIN")
+                {
+                    sql = "select [Date],[Order ID],[SKU],[Units],[Product],[F# name],[M# name],[L# name],[Street],[City],[Postcode]," +
+                            "[Region],[Phone],[Manager ID],[Record Count],[Packing] " +
+                            "from [Hoja1$]";
+                }
+
                 xlsxConn.Open();
                 OleDbCommand cmd = new OleDbCommand(sql, xlsxConn);    //valueSheet$ (nombre de la hoja en el xls)
                 OleDbDataAdapter da = new OleDbDataAdapter(cmd);
@@ -64,8 +79,13 @@ namespace isdinLove.clases
                 da.Fill(dt);
                 xlsxConn.Close();
 
-                if(archivo == "CON")
+                //agrego un campo en el datarow que no existe
+                //enum este caso es el mismo valor para todos los row ya que es un ID
+                //y lo lleno con datos antes de asignar el mapeo de columnas para el bulk insert
+                dt.Columns.Add(new DataColumn("fileID", typeof(System.Int16)));
+                foreach(DataRow dr in dt.Rows)
                 {
+<<<<<<< HEAD
                     SqlBulkCopy objBulk = new SqlBulkCopy(sqlConn);
                     objBulk.DestinationTableName = "mtb_CON";
                     objBulk.ColumnMappings("Checkout order id", "");
@@ -74,93 +94,83 @@ namespace isdinLove.clases
 
 
 
-
-                    sqlConn.Open();
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        sqlInsercion = "insert into mtb_CON values (" + fileID;
-                        sqlInsercion = sqlInsercion + ", '" + row["Checkout order id"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Shipping type"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Creation date"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Product type"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Product name"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Product EAN"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Email"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Status"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Pharmacy id sap"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Delivery nº"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Address"];
-                        sqlInsercion = sqlInsercion + "', '" + row["City"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Region name"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Zip code"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Name"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Surname"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Phone"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Id Resource"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Packaging"];
-                        sqlInsercion = sqlInsercion + "')";
-
-                        guardarDatos(sqlInsercion);
-                    }
-                    sqlConn.Close();
+=======
+                    dr["fileID"] = fileID;
                 }
-                
-                else if(archivo == "PIN")
-                {
-                    sqlConn.Open();
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        sqlInsercion = "insert into mtb_PIN values (" + fileID;
-                        sqlInsercion = sqlInsercion + ", '" + row["Date"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Order ID"];
-                        sqlInsercion = sqlInsercion + "', '" + row["SKU"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Units"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Product"];
-                        sqlInsercion = sqlInsercion + "', '" + row["F# name"];
-                        sqlInsercion = sqlInsercion + "', '" + row["M# name"];
-                        sqlInsercion = sqlInsercion + "', '" + row["L# name"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Street"];
-                        sqlInsercion = sqlInsercion + "', '" + row["City"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Postcode"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Region"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Phone"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Manager ID"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Record Count"];
-                        sqlInsercion = sqlInsercion + "', '" + row["Packing"];
-                        sqlInsercion = sqlInsercion + "')";
 
-                        guardarDatos(sqlInsercion);
-                    }
+
+                SqlBulkCopy objBulk = new SqlBulkCopy(sqlConn);
+                if (clsConstantes.prefijo == "CON")
+                {
+                    objBulk.DestinationTableName = "mtb_CON";
+                    //mapeo cada campo del datatable (campo datatable --> campo tabla sql)
+                    objBulk.ColumnMappings.Add("fileID", "fileID");
+                    objBulk.ColumnMappings.Add("Checkout order id", "Checkout order id");
+                    objBulk.ColumnMappings.Add("Shipping type", "Shipping type");
+                    objBulk.ColumnMappings.Add("Creation date", "Creation date");
+                    objBulk.ColumnMappings.Add("Product type", "Product type");
+                    objBulk.ColumnMappings.Add("Product name", "Product name");
+                    objBulk.ColumnMappings.Add("Product EAN", "Product EAN");
+                    objBulk.ColumnMappings.Add("Email", "Email");
+                    objBulk.ColumnMappings.Add("Status", "Status");
+                    objBulk.ColumnMappings.Add("Pharmacy id sap", "Pharmacy id sap");
+                    objBulk.ColumnMappings.Add("Delivery nº", "Delivery nº");
+                    objBulk.ColumnMappings.Add("Address", "Address");
+                    objBulk.ColumnMappings.Add("City", "City");
+                    objBulk.ColumnMappings.Add("Region name", "Region name");
+                    objBulk.ColumnMappings.Add("Zip code", "Zip code");
+                    objBulk.ColumnMappings.Add("Name", "Name");
+                    objBulk.ColumnMappings.Add("Surname", "Surname");
+                    objBulk.ColumnMappings.Add("Phone", "Phone");
+                    objBulk.ColumnMappings.Add("Id Resource", "Id Resource");
+                    objBulk.ColumnMappings.Add("Packaging", "Packaging");
+>>>>>>> 589a3895cfe64af904a980d5d85e12293fc243b7
+
+                    sqlConn.Open();
+                    objBulk.WriteToServer(dt);
+                    sqlConn.Close();
+
+                    //return dt;
+                }
+                else if (clsConstantes.prefijo == "PIN")
+                {
+                    objBulk.DestinationTableName = "mtb_PIN";
+                    //mapeo cada campo del datatable (campo datatable --> campo tabla sql)
+                    objBulk.ColumnMappings.Add("fileID", "fileID");
+                    objBulk.ColumnMappings.Add("Date", "Date");
+                    objBulk.ColumnMappings.Add("Order ID", "Order ID");
+                    objBulk.ColumnMappings.Add("SKU", "SKU");
+                    objBulk.ColumnMappings.Add("Units", "Units");
+                    objBulk.ColumnMappings.Add("Product", "Product");
+                    objBulk.ColumnMappings.Add("F# name", "F# name");
+                    objBulk.ColumnMappings.Add("M# name", "M# name");
+                    objBulk.ColumnMappings.Add("L# name", "L# name");
+                    objBulk.ColumnMappings.Add("Street", "Street");
+                    objBulk.ColumnMappings.Add("City", "City");
+                    objBulk.ColumnMappings.Add("Postcode", "Postcode");
+                    objBulk.ColumnMappings.Add("Region", "Region");
+                    objBulk.ColumnMappings.Add("Phone", "Phone");
+                    objBulk.ColumnMappings.Add("Manager ID", "Manager ID");
+                    objBulk.ColumnMappings.Add("Record Count", "Record Count");
+                    objBulk.ColumnMappings.Add("Packing", "Packing");
+
+                    sqlConn.Open();
+                    objBulk.WriteToServer(dt);
                     sqlConn.Close();
                 }
 
                 return dt;
+
             }
             catch (Exception ex)
             {
                 return null;
+                throw;
             }
-
         }
 
-        //obtener datos y devolver datatable
-        public void guardarDatos(string sqlLinea)
-        {
-            try
-            {
-                SqlCommand sqlCmd = new SqlCommand(sqlLinea, sqlConn);
-                sqlCmd.ExecuteNonQuery();
-            }
-            catch (Exception err)
-            {
-                Console.Write(err.Message);
-            }
-
-
-
-}
-
-public void conexionSqlAbrir()
+        //abro la conexion SQL
+        public void conexionSqlAbrir()
         {
             try
             {
@@ -174,6 +184,7 @@ public void conexionSqlAbrir()
             }
         }
 
+        //cierro la conexion SQL
         public void conexionSqlCerrar()
         {
             try

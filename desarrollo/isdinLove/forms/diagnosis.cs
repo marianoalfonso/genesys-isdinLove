@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using isdinLove.clases;
 
 namespace isdinLove.forms
 {
@@ -33,7 +35,7 @@ namespace isdinLove.forms
             //parte del arbol solo para chequear conexion
             bool conexionXlsxValidada = diagnosticarConexionXLSX();
 
-
+            invocarSP();
 
         }
 
@@ -78,5 +80,33 @@ namespace isdinLove.forms
             watcherLive watcherLive = new watcherLive();
             watcherLive.Show();
         }
+
+
+        public void invocarSP()
+        {
+            SqlConnection conn = new SqlConnection();
+            conn.ConnectionString = clsConstantes.sqlConnectionString;
+            try
+            {
+                conn.Open();
+
+
+                DataTable dt = new DataTable();
+                SqlDataAdapter da = new SqlDataAdapter("p_api_actualiza_stock", conn);
+                da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                da.SelectCommand.Parameters.AddWithValue("@p_proceso", SqlDbType.NVarChar).Value = "CON";
+                da.SelectCommand.Parameters.AddWithValue("@estado", SqlDbType.NVarChar).Value = "OK";
+                da.Fill(dt);
+                dataGridView1.DataSource = dt;
+
+                conn.Close();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("error de conexion al testear el sp");
+            }
+
+        }
+
     }
 }
