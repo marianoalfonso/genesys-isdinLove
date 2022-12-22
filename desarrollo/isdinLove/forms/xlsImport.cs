@@ -311,7 +311,7 @@ namespace isdinLove.forms
                 SqlDataAdapter da = new SqlDataAdapter("p_api_actualiza_stock", conn);
                 da.SelectCommand.CommandType = CommandType.StoredProcedure;
                 da.SelectCommand.Parameters.AddWithValue("@p_proceso", SqlDbType.NVarChar).Value = "CON";
-                da.SelectCommand.Parameters.AddWithValue("@estado", SqlDbType.NVarChar).Value = "error";
+                da.SelectCommand.Parameters.AddWithValue("@estado", SqlDbType.NVarChar).Value = "ok";
                 da.Fill(dt);
                 dataGridView2.DataSource = dt;
                 conn.Close();
